@@ -16,3 +16,9 @@ type CmdArgs struct {
 	ConfigFilePath string
 	ReadInterval   int
 }
+
+type GoogleSheetAPIResponse struct {
+	Success    bool   `json:"ok"`
+	StatusCode int    `json:"status_code"`
+	Message    string `json:"message"`
+}
