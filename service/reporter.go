@@ -16,7 +16,7 @@ type Reporter struct {
 	MaxFailures int
 }
 
-func (r *Reporter) ProcessTemperature() error {
+func (r *Reporter) ProcessTemperature() (model.GoogleSheetAPIResponse, error) {
 	failures := 0
 
 	for {

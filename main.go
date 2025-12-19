@@ -33,7 +33,7 @@ func main() {
 	}
 
 	for {
-		if err := reporter.ProcessTemperature(); err != nil {
+		if _, err := reporter.ProcessTemperature(); err != nil {
 			log.Println("run failed:", err)
 		}
 
