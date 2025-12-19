@@ -30,7 +30,7 @@ func (d *DHT22) InitializeSensor() error {
 }
 
 func (d *DHT22) ReadTemperature() (float64, error) {
-	_, temperature, err := d.Dht.ReadRetry(5)
+	_, temperature, err := d.Dht.ReadRetry(11)
 	if err != nil {
 		return -1, err
 	}
