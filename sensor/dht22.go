@@ -1,6 +1,8 @@
 package sensor
 
 import (
+	"math"
+
 	"github.com/MichaelS11/go-dht"
 )
 
@@ -35,5 +37,5 @@ func (d *DHT22) ReadTemperature() (float64, error) {
 		return -1, err
 	}
 
-	return temperature, nil
+	return math.Round(temperature*100) / 100, nil
 }

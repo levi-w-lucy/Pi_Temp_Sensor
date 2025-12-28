@@ -11,6 +11,8 @@ import (
 	"pitempsensor/model"
 	"pitempsensor/sensor"
 	"pitempsensor/service"
+
+	_ "github.com/MichaelS11/go-dht"
 )
 
 func main() {
@@ -21,29 +23,36 @@ func main() {
 		log.Fatal(err)
 	}
 
+	sensor := sensor.DHT22{Pin: "GPIO17", Dht: nil}
+	sensor.InitializeSensor()
+
 	reporter := service.Reporter{
-		Sensor: &sensor.DHT22{Pin: "GPIO17", Dht: nil},
+		Sensor: &sensor,
 		API: &api.Client{
 			HTTP: &http.Client{Timeout: 10 * time.Second},
 			URL:  cfg.ApiURL,
 		},
 		Secrets:     cfg.Secrets,
-		Datasource:  "RockfordHome",
+		Datasource:  "Rockford",
 		MaxFailures: 10,
 	}
 
 	for {
-		if _, err := reporter.ProcessTemperature(); err != nil {
+		_, err = reporter.ProcessTemperature()
+		if err != nil {
 			log.Println("run failed:", err)
 		}
-
 		time.Sleep(time.Duration(commandArgs.ReadInterval) * time.Minute)
 	}
 }
 
 func ReadCommandArgs() model.CmdArgs {
-	var commandArgs model.CmdArgs
-	flag.StringVar(&commandArgs.ConfigFilePath, "c", "./config/config.json", "Path to config file for temperature sensor")
-	flag.IntVar(&commandArgs.ReadInterval, "i", 5, "Interval to sleep between temperature reads")
-	return commandArgs
+	configFile := flag.String("c", "./config/config.json", "Path to config file for temperature sensor")
+	interval := flag.Int("i", 5, "Interval to sleep between temperature reads")
+	flag.Parse()
+
+	return model.CmdArgs{
+		ConfigFilePath: *configFile,
+		ReadInterval:   *interval,
+	}
 }

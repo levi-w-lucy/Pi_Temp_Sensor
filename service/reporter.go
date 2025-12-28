@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"time"
 
 	"pitempsensor/api"
 	"pitempsensor/model"
@@ -30,6 +31,7 @@ func (r *Reporter) ProcessTemperature() (model.GoogleSheetAPIResponse, error) {
 		}
 
 		failures++
+		time.Sleep(5 * time.Second)
 		if failures >= r.MaxFailures {
 			return r.API.SendError(
 				fmt.Sprintf("temperature read failed %d times", failures),
